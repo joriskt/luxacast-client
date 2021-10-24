@@ -48,7 +48,7 @@ socket.on('open', (ws: WebSocket) => {
 });
 
 socket.on('close', (code: number, reason: Buffer) => {
-    winston.info('Disconnected');
+    winston.info(`Disconnected:  ${code} ${reason.toString('utf-8')}`);
     luxa.color('#f80');
 });
 

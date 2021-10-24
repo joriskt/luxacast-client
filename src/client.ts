@@ -25,6 +25,7 @@ export class RcWebSocket {
     private curTimeout: number;
     private timeoutMultiplier: number;
     private timeoutId?: NodeJS.Timeout;
+    private pingIntervalId?: NodeJS.Timer;
 
     /*
         State
@@ -214,6 +215,10 @@ export class RcWebSocket {
         this.activelyReconnecting = false;
 
         this.emitter.emit('open', this.socket);
+
+        this.pingIntervalId = setInterval(() => {
+            this.socket?.ping();
+        }, 30000);
     }
 
     private onError(err: Error): void {
@@ -227,14 +232,20 @@ export class RcWebSocket {
 
     private onClose(code: number, reason: Buffer): void {
         winston.debug('onClose()');
-
-        this.connected = false;
         this.socket = undefined;
 
-        if (!this.activelyReconnecting) {
+        // Stop sending PINGs.
+        if (this.pingIntervalId) {
+            clearInterval(this.pingIntervalId);
+            this.pingIntervalId = undefined;
+        }
+
+        // Only fire a close event when the connection was closed.
+        if (this.connected) {
             this.emitter.emit('close', code, reason);
         }
 
+        this.connected = false;
         if (this.shouldReconnect) {
             this.startReconnecting();
         }

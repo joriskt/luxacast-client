@@ -3,17 +3,22 @@ import { LuxaFlag } from 'luxa-driver';
 const OFF: string = '#000';
 const RED: string = '#f00';
 const GREEN: string = '#0f0';
-const ORANGE: string = '#f60';
+const ORANGE: string = '#f40';
 const CYAN: string = '#0ff';
 
 export function onState(E: Record<string, boolean>): string {
-    if (!E.working) {
+    if (!E.working || !(E.office_location || E.home_location)) {
         return OFF;
     }
 
     // If we are occupied.
     if (E.meeting || E.calling || E.busy) {
         return RED;
+    }
+
+    // If we are away.
+    if (E.away) {
+        return ORANGE;
     }
 
     // When we are in the office..
