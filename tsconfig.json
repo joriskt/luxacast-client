@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "outDir": "./dist",
+        "module": "commonjs",
+        "target": "esnext",
+        "lib": ["esnext"],
+        "alwaysStrict": true,
+        "strict": true,
+        "preserveConstEnums": true,
+        "moduleResolution": "node",
+        "sourceMap": false,
+        "esModuleInterop": true,
+        "types": ["node"],
+        "declaration": true,
+        "declarationMap": true
+    },
+    "include": ["src", "dist"],
+    "exclude": ["node_modules", "dist", "test"]
+}
